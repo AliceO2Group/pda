@@ -1,5 +1,5 @@
 # on module load; set perms on /sys/...../new_id; enumerate CRUs & CRORCs
-SUBSYSTEM=="drivers", ACTION=="add", KERNEL=="uio_pci_dma", RUN+="/bin/chgrp pda /sys/%p/new_id", RUN+="/bin/chmod 0220 /sys/%p/new_id", RUN+="/bin/sh -c 'echo 1172 e001 > /sys/bus/pci/drivers/uio_pci_dma/new_id'", RUN+="/bin/sh -c 'echo 10dc 0033 > /sys/bus/pci/drivers/uio_pci_dma/new_id'"
+SUBSYSTEM=="drivers", ACTION=="add", KERNEL=="uio_pci_dma", RUN+="/bin/chgrp pda /sys/%p/new_id", RUN+="/bin/chmod 0220 /sys/%p/new_id", RUN+="/bin/sh -c 'echo 1172 e001 > /sys/bus/pci/drivers/uio_pci_dma/new_id'", RUN+="/bin/sh -c 'echo 10dc 0033 > /sys/bus/pci/drivers/uio_pci_dma/new_id'", RUN+="/bin/sh -c 'echo 10dc 0034 > /sys/bus/pci/drivers/uio_pci_dma/new_id'"
 
 # new device added; set perms on /dev/uioX and PCI config and resources
 SUBSYSTEM=="uio", ACTION=="add", RUN+="/bin/chgrp pda %N /sys/%p/device/config /sys/%p/device/resource0 /sys/%p/device/resource1", RUN+="/bin/chmod 0664 %N /sys/%p/device/config" RUN+="/bin/chmod 0660 %N /sys/%p/device/resource0 /sys/%p/device/resource1"
