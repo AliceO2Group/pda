@@ -1,5 +1,5 @@
 %define module pda-kadapter-dkms
-%define version 1.1.0
+%define version 1.2.0
 
 Summary: PDA kernel adapter DKMS package
 Name: %{module}
@@ -9,7 +9,7 @@ License: BSD
 Packager: Pascal Boeschoten
 Group: System Environment/Base
 BuildArch: noarch
-Requires: dkms >= 1.00
+Requires: dkms >= 1.00, kernel-devel, kernel-headers
 Requires: bash
 Source0: %{module}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root/
