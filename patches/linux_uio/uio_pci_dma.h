@@ -327,6 +327,16 @@ BIN_ATTR_MAP_CALLBACK( map_sg );
 #define PDA_SIXARG_GUP
 #endif
 
+/**
+ * Kernel 4.17 joins struct fault_env and vm_fault:
+ * https://github.com/torvalds/linux/commit/82b0f8c39a3869b6fd2a10e180a862248736ec6f
+ * It also introduces vmf_insert_page() of vm_fault_t return type, replacing vm_insert_page()
+ * https://github.com/torvalds/linux/commit/1c8f422059ae5da07db7406ab916203f9417e396
+ **/
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 17, 0)
+#define PDA_VMF_T
+#endif
+
 #endif /** __KERNEL__ */
 
 #endif /** UIO_PCI_DMA_H */

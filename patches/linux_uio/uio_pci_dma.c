@@ -1068,25 +1068,45 @@ uio_pci_dma_free_kernel_memory(struct uio_pci_dma_private *priv)
 
 
 #ifdef UIO_PDA_USE_PAGEFAULT_HANDLER
+#ifdef PDA_VMF_T
+static vm_fault_t
+#else
 static int
+#endif
 page_fault_handler
 (
+#ifndef PDA_VMF_T
     struct vm_area_struct *vma,
+#endif
     struct vm_fault       *vmf
 )
 {
     UIO_DEBUG_ENTER();
 
+#ifdef PDA_VMF_T
+    struct vm_area_struct *vma = vmf->vma;
+#endif
     struct uio_pci_dma_private *priv = vma->vm_private_data;
 
 #ifdef PDA_PFN_T_PAGES
+#ifdef PDA_VMF_T
+    return vmf_insert_mixed(vma, (unsigned long)vmf->address,
+                              pfn_to_pfn_t(priv->pfn_list[vmf->pgoff % priv->pages]));
+#else
     int ret = vm_insert_mixed(vma, (unsigned long)vmf->virtual_address,
                               pfn_to_pfn_t(priv->pfn_list[vmf->pgoff % priv->pages]));
+#endif
+#else
+#ifdef PDA_VMF_T
+    return vmf_insert_mixed(vma, (unsigned long)vmf->address,
+                              priv->pfn_list[vmf->pgoff % priv->pages]);
 #else
     int ret = vm_insert_mixed(vma, (unsigned long)vmf->virtual_address,
                               priv->pfn_list[vmf->pgoff % priv->pages]);
 #endif
+#endif
 
+#ifndef PDA_VMF_T
     switch(ret)
     {
         case 0:
@@ -1095,6 +1115,7 @@ page_fault_handler
         case -ENOMEM      : { UIO_DEBUG_RETURN(VM_FAULT_OOM);    }
         default           : { UIO_DEBUG_RETURN(VM_FAULT_SIGBUS); }
     }
+#endif
 
 }
 
