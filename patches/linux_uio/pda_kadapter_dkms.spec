@@ -1,5 +1,5 @@
 %define module pda-kadapter-dkms
-%define version 1.2.0
+%define version 2.0.0
 
 Summary: PDA kernel adapter DKMS package
 Name: %{module}

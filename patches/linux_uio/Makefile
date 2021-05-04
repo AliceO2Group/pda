@@ -1,6 +1,6 @@
 KDIR    := /lib/modules/$(shell uname -r)/build
 VERSION := $(shell uname -r)-$(shell cat uio_pci_dma.h | grep UIO_PCI_DMA_VERSION | cut -d\" -f2)
-DKMS_VERSION := 1.2.0
+DKMS_VERSION := 2.0.0
 DKMS_DIR=pda-kadapter-dkms-${DKMS_VERSION}
 
 all: prepare
