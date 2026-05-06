@@ -7,7 +7,7 @@
 
 # This is pda GIT tag from upstream repository
 GIT_REPO=https://github.com/cbm-fles/pda
-GIT_TAG=11.10.7
+GIT_TAG=11.11.7
 # This is the branch name to take from, if not using the tag. Leave blank to use tag.
 GIT_BRANCH=
 
@@ -82,10 +82,10 @@ cd pda
 git fetch
 if [ "$GIT_BRANCH" != "" ]; then
   git checkout -b ${GIT_BRANCH} origin/${GIT_BRANCH}
-  PKG_DESCRIPTION = "${PKG_DESCRIPTION} Using ${GIT_REPO} branch ${GIT_BRANCH}."
+  PKG_DESCRIPTION="${PKG_DESCRIPTION} Using ${GIT_REPO} branch ${GIT_BRANCH}."
 else
   git checkout tags/${GIT_TAG}
-  PKG_DESCRIPTION = "${PKG_DESCRIPTION} Using ${GIT_REPO} tag ${GIT_TAG}."
+  PKG_DESCRIPTION="${PKG_DESCRIPTION} Using ${GIT_REPO} tag ${GIT_TAG}."
 fi
 cd patches/linux_uio
 
@@ -97,11 +97,15 @@ if [ "$USE_LOCAL_SOURCES" == "1" ]; then
       cp -p ${CURDIR}/${ff} .
     fi
   done
+  echo "For reference, detected diff from GIT:"
+  git diff
 fi
 
 # create source tarball
 KMOD_VERSION=`cat uio_pci_dma.h | grep UIO_PCI_DMA_VERSION | cut -d\" -f2`
 echo "Detected uio_pci_dma  kernel module version ${KMOD_VERSION}"
+echo "Sources in `pwd`"
+
 VERSION="${PKG_VERSION}.${KMOD_VERSION}"
 PKG_DIR=${PKG_NAME}-${VERSION}
 mkdir -p ${WDIR}/${PKG_DIR}

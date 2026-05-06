@@ -48,7 +48,7 @@
 #define LINUX_VERSION_CODE KERNEL_VERSION(2,6,35)
 */
 
-#define UIO_PCI_DMA_VERSION "0.13.0"
+#define UIO_PCI_DMA_VERSION "0.14.0"
 #define UIO_PCI_DMA_MINOR   "0"
 
 #define UIO_PCI_DMA_SUCCESS 0
@@ -128,7 +128,7 @@ struct scatter
 /** Kernel versions <= 2.6.34 don't get a file pointer passed to the
  *  sysfs-callbacks
  */
-    #if LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 34)
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 34)
     #define BIN_ATTR_WRITE_CALLBACK( name )                                            \
     ssize_t                                                                            \
     uio_pci_dma_sysfs_ ## name                                                         \
@@ -159,9 +159,54 @@ struct scatter
         struct bin_attribute  *attr,                                                   \
         struct vm_area_struct *vma                                                     \
     )
-    #endif
+#endif /* LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 34) */
 
-    #if LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 34)
+#if LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 34)
+/**
+ * Kernel versions >= 6.13 constifies 'struct bin_attribute' mmap callback
+ * https://github.com/torvalds/linux/commit/94a20fb9af16417ab5fd17bcde3d906926f15ef6
+ * Kernel patch is backported to RHEL 10.1
+ * 
+ * Kernel versions >= 6.16 constifies 'struct bin_attribute' read/write callbacks
+ * https://github.com/torvalds/linux/commit/97d06802d10a2827ef46fd31789a26117ce7f3d9
+ */
+#ifdef RHEL_RELEASE_CODE
+    #if RHEL_RELEASE_CODE >= RHEL_RELEASE_VERSION(10, 1)
+        #define RHEL_RELEASE_10_1
+    #endif
+#endif
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 13, 0) || defined(RHEL_RELEASE_10_1)
+    #define BIN_ATTR_CONST_MMAP
+#endif
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0)
+    #define BIN_ATTR_CONST_RDWR
+#endif
+
+#if defined(BIN_ATTR_CONST_RDWR)
+    #define BIN_ATTR_WRITE_CALLBACK( name )                                            \
+    ssize_t                                                                            \
+    uio_pci_dma_sysfs_ ## name                                                         \
+    (                                                                                  \
+        struct file                *file,                                              \
+        struct kobject             *kobj,                                              \
+        const struct bin_attribute *attr,                                              \
+        char                       *buffer,                                            \
+        loff_t                      offset,                                            \
+        size_t                      count                                              \
+    )
+
+    #define BIN_ATTR_READ_CALLBACK( name )                                             \
+    ssize_t                                                                            \
+    uio_pci_dma_sysfs_ ## name                                                         \
+    (                                                                                  \
+        struct file                *file,                                              \
+        struct kobject             *kobj,                                              \
+        const struct bin_attribute *attr,                                              \
+        char                       *buffer,                                            \
+        loff_t                      offset,                                            \
+        size_t                      count                                              \
+    )
+#else
     #define BIN_ATTR_WRITE_CALLBACK( name )                                            \
     ssize_t                                                                            \
     uio_pci_dma_sysfs_ ## name                                                         \
@@ -185,7 +230,19 @@ struct scatter
         loff_t                offset,                                                  \
         size_t                count                                                    \
     )
+#endif
 
+#if defined(BIN_ATTR_CONST_MMAP)
+    #define BIN_ATTR_MAP_CALLBACK( name )                                              \
+    int                                                                                \
+    uio_pci_dma_sysfs_ ## name                                                         \
+    (                                                                                  \
+        struct file                *file,                                              \
+        struct kobject             *kobj,                                              \
+        const struct bin_attribute *attr,                                              \
+        struct vm_area_struct      *vma                                                \
+    )
+#else
     #define BIN_ATTR_MAP_CALLBACK( name )                                              \
     int                                                                                \
     uio_pci_dma_sysfs_ ## name                                                         \
@@ -195,7 +252,9 @@ struct scatter
         struct bin_attribute  *attr,                                                   \
         struct vm_area_struct *vma                                                     \
     )
-    #endif
+#endif
+
+#endif /* LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 34) */
 
 /** Kernel versions <= 2.6.31 don't have certain defines for PCI config space
  *  adressing */
@@ -279,6 +338,8 @@ struct scatter
     attr_bin_ ## _name->write     = _write;                                            \
     attr_bin_ ## _name->mmap      = _mmap;
 
+    // TODO we may want to use sysfs_bin_attr_init here
+    // https://github.com/torvalds/linux/commit/35960258ed388cdcebdb71df35fd5126978ca325
 
 /** Attribute callback definitions */
 BIN_ATTR_READ_CALLBACK( mps );
@@ -302,6 +363,9 @@ BIN_ATTR_MAP_CALLBACK( map_sg );
  * https://lwn.net/Articles/672457/
  * These changes are back-ported at least into CentOS 7.3,
  * kernel 3.10.0-514.6.1.el7.x86_64
+ * 
+ * Kernel 6.17 removes the pnf_t functionality again.
+ * https://github.com/torvalds/linux/commit/21aa65bf82a78c1e70447a45a85e533689b7f1a7
  **/
 #if defined(RHEL_RELEASE_CODE)
 #if RHEL_RELEASE_CODE >= RHEL_RELEASE_VERSION(7, 3)
@@ -309,7 +373,7 @@ BIN_ATTR_MAP_CALLBACK( map_sg );
 #endif
 #endif
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 5, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 5, 0) && LINUX_VERSION_CODE < KERNEL_VERSION(6, 17, 0)
 #define PDA_PFN_T_PAGES
 #endif
 

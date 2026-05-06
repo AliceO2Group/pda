@@ -1,3 +1,12 @@
+pda-kernel-dkms (0.14.0-1) noble; urgency=medium
+
+  * Patches for kernel interface changes
+  * Kernel 6.13 and RHEL 10.1 : const struct bin_attribute in mmap callback 
+  * Kernel 6.16               : const struct bin_attribute in read/write callbacks
+  * Kernel 6.17               : removal of pnf_t functionality
+
+ -- Dirk Hutter <hutter@compeng.uni-frankfurt.de>  Tue, 14 Apr 2026 13:13:33 +0200
+
 pda-kernel-dkms (0.13.0-1) noble; urgency=medium
 
   * Updates for RHEL 9.6

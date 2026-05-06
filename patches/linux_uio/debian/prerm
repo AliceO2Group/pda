@@ -10,9 +10,7 @@ set -e
 case "$1" in
     remove|upgrade|deconfigure)
 
-    set +e
-    modprobe -r uio_pci_dma
-    set -e
+    modprobe -r uio_pci_dma || true
 
     ;;
 
