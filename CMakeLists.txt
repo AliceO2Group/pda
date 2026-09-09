@@ -1,5 +1,5 @@
 # Copyright 2017 Jan de Cuveland <cmail@cuveland.de>
-cmake_minimum_required(VERSION 3.0.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.16)
 
 # retrieve project version information
 file(READ VERSION PDA_VERSION)
