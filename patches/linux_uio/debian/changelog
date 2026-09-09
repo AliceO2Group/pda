@@ -1,3 +1,10 @@
+pda-kernel-dkms (0.15.0-1) noble; urgency=medium
+
+  * Patches for kernel interface changes
+  * RHEL 10.2 : const struct bin_attribute in read/write callbacks
+
+ -- Dirk Hutter <hutter@compeng.uni-frankfurt.de>  Wed, 02 Sep 2026 14:28:00 +0200
+
 pda-kernel-dkms (0.14.0-1) noble; urgency=medium
 
   * Patches for kernel interface changes

@@ -7,9 +7,9 @@ include /usr/share/dpkg/pkg-info.mk
 
 override_dh_install:
 	mkdir debian/tmp && cp Makefile.dkms debian/tmp/Makefile
-	dh_install uio_pci_dma.* debian/tmp/Makefile usr/src/pda-kernel-$(DEB_VERSION_UPSTREAM)/
-	dh_install 90-pda.rules /lib/udev/rules.d/
-	dh_install 90-pda.conf /usr/lib/modules-load.d/
+	dh_install uio_pci_dma.[ch] debian/tmp/Makefile usr/src/pda-kernel-$(DEB_VERSION_UPSTREAM)/
+	dh_install 90-pda.rules usr/lib/udev/rules.d/
+	dh_install 90-pda.conf usr/lib/modules-load.d/
 
 override_dh_dkms:
 	dh_dkms -V $(DEB_VERSION_UPSTREAM)
