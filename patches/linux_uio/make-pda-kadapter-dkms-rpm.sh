@@ -7,7 +7,7 @@
 
 # This is pda GIT tag from upstream repository
 GIT_REPO=https://github.com/cbm-fles/pda
-GIT_TAG=11.11.7
+GIT_TAG=11.12.7
 # This is the branch name to take from, if not using the tag. Leave blank to use tag.
 GIT_BRANCH=
 
@@ -23,7 +23,7 @@ CURDIR=`pwd`
 
 # use local versions of kernel module source files, if found
 # (eg to test a local version not available in upstream repo)
-USE_LOCAL_SOURCES=1
+USE_LOCAL_SOURCES=0
 
 PKG_DESCRIPTION=""
 PKG_RELEASE=0
