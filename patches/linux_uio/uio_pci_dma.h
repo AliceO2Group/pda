@@ -371,14 +371,16 @@ BIN_ATTR_MAP_CALLBACK( map_sg );
  * https://github.com/torvalds/linux/commit/21aa65bf82a78c1e70447a45a85e533689b7f1a7
  **/
 #if defined(RHEL_RELEASE_CODE)
-#if RHEL_RELEASE_CODE >= RHEL_RELEASE_VERSION(7, 3)
+#if RHEL_RELEASE_CODE >= RHEL_RELEASE_VERSION(7, 3) && RHEL_RELEASE_CODE < RHEL_RELEASE_VERSION(10, 3)
 #define PDA_PFN_T_PAGES
 #endif
-#endif
+#else
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 5, 0) && LINUX_VERSION_CODE < KERNEL_VERSION(6, 17, 0)
 #define PDA_PFN_T_PAGES
 #endif
+#endif
+
 
 #ifdef PDA_PFN_T_PAGES
 #include <linux/pfn_t.h>
